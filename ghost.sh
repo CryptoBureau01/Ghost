@@ -500,6 +500,9 @@ git_ssh_key() {
     if [ -f "$private_key" ] && [ -f "$public_key" ]; then
         echo "SSH key pair generated successfully."
 
+        print_info "Please wait ..."
+        sleep 1 // wait 1 secound
+        
         # Save the public key to git.txt with label "SSH key"
         echo "Saving the SSH key to $git_txt..."
 
@@ -508,34 +511,55 @@ git_ssh_key() {
         cat "$public_key" >> "$git_txt"
         echo "" >> "$git_txt"  # Add a new line for separation
 
-        # Create 'Git Password' file (simulating with a placeholder message)
+        # Create 'Git Password' file
         echo "Git SSH key has been generated and is ready for use." > "$git_password_file"
+
+        print_info "Please wait ..."
+        sleep 1 // wait 1 secound
         
         # Save the Git Password message to git.txt
-        echo "Git Password saved to $git_txt."
+        echo "Git Password:" >> "$git_txt"
+        cat "$git_password_file" >> "$git_txt"
 
-        echo "SSH key saved to $git_txt."
+        echo "Git Password and SSH key saved to $git_txt."
     else
         echo "Error: SSH key generation failed. Please try again."
         return 1
     fi
 
-    # Copy the keys to the /root/.ssh/ directory with proper naming
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    
+    # Copy the keys to the /root/.ssh/ directory with user-provided naming
     echo "Copying the SSH keys to /root/.ssh/..."
-    cp "$private_key" "$ssh_dir/id_private_key"
-    cp "$public_key" "$ssh_dir/id_public_key"
+    cp "$private_key" "$ssh_dir/$(basename "$private_key")"
+    cp "$public_key" "$ssh_dir/$(basename "$public_key")"
 
-    echo "SSH keys copied to /root/.ssh/ as id_private_key and id_public_key."
+    echo "SSH keys copied to /root/.ssh/ with the same names provided by the user."
 
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    
+    # Copy the keys to the /root/ghost/ghost-node/ directory with user-provided naming
+    echo "Copying the SSH keys to /root/ghost/ghost-node/..."
+    cp "$private_key" "$ghost_node_dir/$(basename "$private_key")"
+    cp "$public_key" "$ghost_node_dir/$(basename "$public_key")"
+
+    echo "SSH keys copied to /root/ghost/ghost-node/ with the same names provided by the user."
+
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    
+    # Configure git to use the SSH key
     git config --global gpg.format ssh
-
-    git config --global user.signingkey "$ssh_dir/id_public_key"
+    git config --global user.signingkey "$ssh_dir/$(basename "$private_key")"
 
     echo "SSH key setup complete."
 
     # Call the Master function to display the menu
     master
 }
+
 
 
 
