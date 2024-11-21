@@ -221,10 +221,13 @@ services_setup() {
         ./scripts/starter.sh --make-global
         echo "Starter script executed successfully."
 
+        print_info "Please wait ..."
+        sleep 1 // wait 1 secound
         # Step 4: Run the starter script to set arguments
         echo "Running the starter script to set arguments..."
         ./scripts/starter.sh --set-arguments
         echo "Starter script '--set-arguments' executed successfully."
+        
     else
         echo "Error: Directory $GHOST_NODE_DIR does not exist."
         echo "Please run the setup_node function first."
@@ -403,9 +406,8 @@ keys_update_server() {
     # Wait for user confirmation
     read -p "Press Enter to continue..."
 
-    # Create /etc/ghost directory if it doesn't exist
-    echo "Creating /etc/ghost directory if it does not exist..."
-    sudo mkdir -p /etc/ghost
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
 
     # Navigate to the Ghost node directory
     GHOST_NODE_DIR="/root/ghost/ghost-node"
@@ -417,12 +419,31 @@ keys_update_server() {
         return 1
     fi
 
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    
     # Pull latest changes from Git and create a new branch
     echo "Fetching the latest changes from Git..."
     git pull origin main
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
     read -p "Enter the branch name to create: " branch_name
     git checkout -b "$branch_name"
 
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    # Check if the git.txt file exists, and either create or update it
+    GIT_FILE="/root/ghost/ghost-node/git.txt"
+    if [ -f "$GIT_FILE" ]; then
+        echo "File exists. Updating branch name..."
+    else
+        echo "File does not exist. Creating file..."
+    fi
+
+    # Update or create the file with the branch name
+    echo "$branch_name" > "$GIT_FILE"
+
+    
     # Update service/ghosties file
     SERVICE_FILE="$GHOST_NODE_DIR/service/ghosties"
     echo "Updating $SERVICE_FILE with wallet details..."
@@ -446,6 +467,75 @@ keys_update_server() {
 }
 
 
+git_ssh_key() {
+    # Define paths for the keys and files
+    ghost_node_dir="/root/ghost/ghost-node"
+    ssh_dir="/root/.ssh"
+    git_txt="$ghost_node_dir/git.txt"
+    git_password_file="$ghost_node_dir/Git_Password"
+
+    # Ensure the /root/ghost/ghost-node folder exists
+    mkdir -p "$ghost_node_dir"
+    
+    # Ensure the /root/.ssh folder exists
+    mkdir -p "$ssh_dir"
+
+    # Define default key file location
+    default_key="$ghost_node_dir/id_rsa"
+
+    # Prompt the user for the SSH key name (optional)
+    read -p "Enter the SSH key name (default is $default_key): " key_name
+    if [ -z "$key_name" ]; then
+        key_name="$default_key"  # Use the default if no input is provided
+    fi
+
+    # Generate SSH key pair without interactive prompts, specifying the key file
+    echo "Generating SSH key pair..."
+    ssh-keygen -t rsa -b 4096 -f "$key_name" -N ""  # -N "" to skip passphrase
+
+    # Check if the key files exist
+    private_key="${key_name}"
+    public_key="${key_name}.pub"
+
+    if [ -f "$private_key" ] && [ -f "$public_key" ]; then
+        echo "SSH key pair generated successfully."
+
+        # Save the public key to git.txt with label "SSH key"
+        echo "Saving the SSH key to $git_txt..."
+
+        # Append the public key to git.txt
+        echo "SSH key: $public_key" >> "$git_txt"
+        cat "$public_key" >> "$git_txt"
+        echo "" >> "$git_txt"  # Add a new line for separation
+
+        # Create 'Git Password' file (simulating with a placeholder message)
+        echo "Git SSH key has been generated and is ready for use." > "$git_password_file"
+        
+        # Save the Git Password message to git.txt
+        echo "Git Password saved to $git_txt."
+
+        echo "SSH key saved to $git_txt."
+    else
+        echo "Error: SSH key generation failed. Please try again."
+        return 1
+    fi
+
+    # Copy the keys to the /root/.ssh/ directory with proper naming
+    echo "Copying the SSH keys to /root/.ssh/..."
+    cp "$private_key" "$ssh_dir/id_private_key"
+    cp "$public_key" "$ssh_dir/id_public_key"
+
+    echo "SSH keys copied to /root/.ssh/ as id_private_key and id_public_key."
+
+    git config --global gpg.format ssh
+
+    git config --global user.signingkey "$ssh_dir/id_public_key"
+
+    echo "SSH key setup complete."
+
+    # Call the Master function to display the menu
+    master
+}
 
 
 
@@ -467,7 +557,8 @@ master() {
     print_info "6. Create-Wallet"
     print_info "7. Save-Keys"
     print_info "8. Keys-Update-Server"
-    print_info "9. "
+    print_info "9. Git-SSH-Keys"
+    print_info "10. "
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
@@ -501,10 +592,13 @@ master() {
             keys_update_server
             ;;
         9)
+            git_ssh_key
+            ;;
+        10)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 3 : "
+            print_error "Invalid choice. Please enter 1 or 10 : "
             ;;
     esac
 }
