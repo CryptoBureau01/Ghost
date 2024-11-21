@@ -327,34 +327,41 @@ save_keys() {
     echo "        Saving Keys Details        " >> /root/ghost/ghost-node/wallet.txt
     echo "===================================" >> /root/ghost/ghost-node/wallet.txt
 
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
     # Save Node Key Inspection Output
     echo "Inspecting Node Key:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect-node-key --bin --file=/etc/ghost/node-key >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    
     # Save Wallet Key Inspection Output
     echo "Inspecting Wallet Key:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/wallet-key) >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    
     # Save Stash Key Inspection Output
     echo "Inspecting Stash Key:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/stash-key) >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    
     # Save Session Keys Inspection Outputs
     echo "Inspecting Session Key - AUDI:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//audi" >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    
     echo "Inspecting Session Key - BABE:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//babe" >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    
     echo "Inspecting Session Key - SLOW:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//slow" >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    
     echo "Inspecting Session Key - GRAN:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//gran" >> /root/ghost/ghost-node/wallet.txt 2>&1
-
+    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
     echo "===================================" >> /root/ghost/ghost-node/wallet.txt
     echo "          Keys Saved Successfully  " >> /root/ghost/ghost-node/wallet.txt
-    echo "==================================="
+    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
 
     echo "All keys' details have been saved to /root/ghost/ghost-node/wallet.txt"
 }
