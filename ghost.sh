@@ -382,7 +382,7 @@ keys_update_server() {
         return 1
     fi
 
-    # Extract keys using grep and sed
+    # Extract keys using grep, awk, and sed
     LOCAL_IDENTITY=$(grep -A 1 "Inspecting Node Key" "$WALLET_FILE" | tail -n 1 | awk '{print $1}')
     WALLET_KEY=$(grep -A 4 "Inspecting Wallet Key" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
     STASH_KEY=$(grep -A 4 "Inspecting Stash Key" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
@@ -391,15 +391,14 @@ keys_update_server() {
     SLOW_KEY=$(grep -A 4 "Inspecting Session Key - SLOW" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
     GRAN_KEY=$(grep -A 4 "Inspecting Session Key - GRAN" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
 
-
-    # Print extracted data for verification
-    echo "Local identity : $local_identity"
-    echo "Public key (hex) wallet : $wallet_key"
-    echo "Public key (hex) stash : $stash_key"
-    echo "Public key (hex) audi : $audi_key"
-    echo "Public key (hex) babe : $babe_key"
-    echo "Public key (hex) slow : $slow_key"
-    echo "Public key (hex) gran : $gran_key"
+    # Display the keys
+    echo "Local Identity: $LOCAL_IDENTITY"
+    echo "Wallet Key: $WALLET_KEY"
+    echo "Stash Key: $STASH_KEY"
+    echo "Audi Key: $AUDI_KEY"
+    echo "Babe Key: $BABE_KEY"
+    echo "Slow Key: $SLOW_KEY"
+    echo "Gran Key: $GRAN_KEY"
 
     # Wait for user confirmation
     read -p "Press Enter to continue..."
@@ -429,14 +428,14 @@ keys_update_server() {
     echo "Updating $SERVICE_FILE with wallet details..."
     {
         echo "### My Submission for Genesis Code - Satoshi ###"
-        echo "Local identity             : $local_identity"
-        echo "Public key (hex) wallet    : $wallet_key"
+        echo "Local identity             : $LOCAL_IDENTITY"
+        echo "Public key (hex) wallet    : $WALLET_KEY"
         echo "=================================================================================================================="
-        echo "Public key (hex) stash     : $stash_key"
-        echo "Public key (hex) audi      : $audi_key"
-        echo "Public key (hex) babe      : $babe_key"
-        echo "Public key (hex) slow      : $slow_key"
-        echo "Public key (hex) gran      : $gran_key"
+        echo "Public key (hex) stash     : $STASH_KEY"
+        echo "Public key (hex) audi      : $AUDI_KEY"
+        echo "Public key (hex) babe      : $BABE_KEY"
+        echo "Public key (hex) slow      : $SLOW_KEY"
+        echo "Public key (hex) gran      : $GRAN_KEY"
     } > "$SERVICE_FILE"
 
     # Confirmation message
