@@ -244,7 +244,7 @@ create_wallet() {
     # Step 1: Check if the folder exists and change ownership
     if [ -d "/etc/ghost" ]; then
         echo "Directory /etc/ghost exists. Changing ownership..."
-        sudo chown /root /etc/ghost
+        sudo chown root /etc/ghost
     else
         echo "Directory /etc/ghost does not exist. Please create it first using 'sudo mkdir -p /etc/ghost'."
         return 1
