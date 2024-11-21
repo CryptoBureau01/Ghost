@@ -311,6 +311,55 @@ create_wallet() {
 
 
 
+save_keys() {
+    # Check if wallet.txt already exists
+    if [ -f "/root/ghost/ghost-node/wallet.txt" ]; then
+        echo "File wallet.txt already exists. Skipping creation..."
+    else
+        echo "Creating wallet.txt file..."
+        mkdir -p /root/ghost/ghost-node
+        touch /root/ghost/ghost-node/wallet.txt
+        echo "File wallet.txt created successfully."
+    fi
+
+    # Append outputs of all commands to wallet.txt
+    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "        Saving Keys Details        " >> /root/ghost/ghost-node/wallet.txt
+    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
+
+    # Save Node Key Inspection Output
+    echo "Inspecting Node Key:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect-node-key --bin --file=/etc/ghost/node-key >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    # Save Wallet Key Inspection Output
+    echo "Inspecting Wallet Key:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/wallet-key) >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    # Save Stash Key Inspection Output
+    echo "Inspecting Stash Key:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/stash-key) >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    # Save Session Keys Inspection Outputs
+    echo "Inspecting Session Key - AUDI:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//audi" >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    echo "Inspecting Session Key - BABE:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//babe" >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    echo "Inspecting Session Key - SLOW:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//slow" >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    echo "Inspecting Session Key - GRAN:" >> /root/ghost/ghost-node/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//gran" >> /root/ghost/ghost-node/wallet.txt 2>&1
+
+    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "          Keys Saved Successfully  " >> /root/ghost/ghost-node/wallet.txt
+    echo "==================================="
+
+    echo "All keys' details have been saved to /root/ghost/ghost-node/wallet.txt"
+}
+
+
 # Function to display menu and prompt user for input
 master() {
     print_info "==============================="
@@ -323,13 +372,14 @@ master() {
     print_info "4. Connect-Ghost"
     print_info "5. Service-Setup" 
     print_info "6. Create-Wallet"
-    print_info "7. Exit"
+    print_info "7. Save-Keys"
+    print_info "8. Exit"
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 4): " user_choice
+    read -p "Enter your choice (1 or 8): " user_choice
 
     case $user_choice in
         1)
@@ -351,6 +401,9 @@ master() {
             create_wallet
             ;;
         7)
+            save_keys
+            ;;
+        8)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
