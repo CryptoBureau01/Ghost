@@ -323,6 +323,7 @@ master() {
     print_info "4. Connect-Ghost"
     print_info "5. Service-Setup" 
     print_info "6. Create-Wallet"
+    print_info "7. Exit"
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
@@ -350,8 +351,6 @@ master() {
             create_wallet
             ;;
         7)
-
-            ;;
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
