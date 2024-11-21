@@ -382,14 +382,15 @@ keys_update_server() {
         return 1
     fi
 
-    # Extract wallet details
-    local_identity=$(grep "Inspecting Node Key:" $WALLET_FILE | awk '{print $3}')
-    wallet_key=$(grep -A 1 "Inspecting Wallet Key:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
-    stash_key=$(grep -A 1 "Inspecting Stash Key:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
-    audi_key=$(grep -A 1 "Inspecting Session Key - AUDI:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
-    babe_key=$(grep -A 1 "Inspecting Session Key - BABE:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
-    slow_key=$(grep -A 1 "Inspecting Session Key - SLOW:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
-    gran_key=$(grep -A 1 "Inspecting Session Key - GRAN:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+    # Extract keys using grep and sed
+    LOCAL_IDENTITY=$(grep -A 1 "Inspecting Node Key" "$WALLET_FILE" | tail -n 1 | awk '{print $1}')
+    WALLET_KEY=$(grep -A 4 "Inspecting Wallet Key" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
+    STASH_KEY=$(grep -A 4 "Inspecting Stash Key" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
+    AUDI_KEY=$(grep -A 4 "Inspecting Session Key - AUDI" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
+    BABE_KEY=$(grep -A 4 "Inspecting Session Key - BABE" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
+    SLOW_KEY=$(grep -A 4 "Inspecting Session Key - SLOW" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
+    GRAN_KEY=$(grep -A 4 "Inspecting Session Key - GRAN" "$WALLET_FILE" | grep "Public key (hex)" | awk '{print $4}')
+
 
     # Print extracted data for verification
     echo "Local identity : $local_identity"
