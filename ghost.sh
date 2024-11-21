@@ -118,7 +118,7 @@ install_dependency() {
     sleep 1 // wait 1 secound
     sudo ufw allow 30333
 
-    # Call the uni_menu function to display the menu
+    # Call the Master function to display the menu
     master
 }
 
@@ -132,7 +132,7 @@ install_node() {
     git clone https://git.ghostchain.io/ghostchain/ghost-node.git
     cd ghost-node
 
-    # Call the uni_menu function to display the menu
+    # Call the Master function to display the menu
     master
 }
 
@@ -158,7 +158,7 @@ setup_node() {
         exit 1
     fi
 
-    # Call the uni_menu function to display the menu
+    # Call the Master function to display the menu
     master
 }
 
@@ -198,7 +198,7 @@ connect_node() {
         exit 1
     fi
 
-    # Call the uni_menu function to display the menu
+    # Call the Master function to display the menu
     master
 }
 
@@ -231,15 +231,15 @@ services_setup() {
         exit 1
     fi
 
-    # Call the uni_menu function to display the menu
+    # Call the Master function to display the menu
     master
 }
 
 
 create_wallet() {
-    echo "==================================="
-    echo "         Creating Wallet           "
-    echo "==================================="
+    echo "====================================================================================="
+    echo "                         Creating Wallet                                             "
+    echo "====================================================================================="
 
     # Step 1: Check if the folder exists and change ownership
     if [ -d "/etc/ghost" ]; then
@@ -301,11 +301,11 @@ create_wallet() {
     ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//gran" --scheme=ed25519
     read -p "Press Enter to finish..."
 
-    echo "==================================="
-    echo "        Wallet Setup Complete      "
-    echo "==================================="
+    echo "====================================================================================="
+    echo "                     Wallet Setup Complete                                           "
+    echo "====================================================================================="
 
-    # Call the uni_menu function to display the menu
+    # Call the Master function to display the menu
     master
 }
 
@@ -323,9 +323,9 @@ save_keys() {
     fi
 
     # Append outputs of all commands to wallet.txt
-    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
-    echo "        Saving Keys Details        " >> /root/ghost/ghost-node/wallet.txt
-    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "                       Ghost Saving Keys Details                                     " >> /root/ghost/ghost-node/wallet.txt
+    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
 
     echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
     # Save Node Key Inspection Output
@@ -359,12 +359,98 @@ save_keys() {
     echo "Inspecting Session Key - GRAN:" >> /root/ghost/ghost-node/wallet.txt
     /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//gran" >> /root/ghost/ghost-node/wallet.txt 2>&1
     echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
-    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
-    echo "          Keys Saved Successfully  " >> /root/ghost/ghost-node/wallet.txt
-    echo "===================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "                      Ghost Keys Saved Successfully                                  " >> /root/ghost/ghost-node/wallet.txt
+    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
 
     echo "All keys' details have been saved to /root/ghost/ghost-node/wallet.txt"
+
+    # Call the Master function to display the menu
+    master
 }
+
+
+keys_update_server() {
+    echo "Reading wallet details from /root/ghost/ghost-node/wallet.txt..."
+    
+    # Define wallet file path
+    WALLET_FILE="/root/ghost/ghost-node/wallet.txt"
+
+    # Check if wallet file exists
+    if [ ! -f "$WALLET_FILE" ]; then
+        echo "Error: Wallet file not found at $WALLET_FILE."
+        return 1
+    fi
+
+    # Extract wallet details
+    local_identity=$(grep "Inspecting Node Key:" $WALLET_FILE | awk '{print $3}')
+    wallet_key=$(grep -A 1 "Inspecting Wallet Key:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+    stash_key=$(grep -A 1 "Inspecting Stash Key:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+    audi_key=$(grep -A 1 "Inspecting Session Key - AUDI:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+    babe_key=$(grep -A 1 "Inspecting Session Key - BABE:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+    slow_key=$(grep -A 1 "Inspecting Session Key - SLOW:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+    gran_key=$(grep -A 1 "Inspecting Session Key - GRAN:" $WALLET_FILE | grep "Public key (hex):" | awk '{print $NF}')
+
+    # Print extracted data for verification
+    echo "Local identity : $local_identity"
+    echo "Public key (hex) wallet : $wallet_key"
+    echo "Public key (hex) stash : $stash_key"
+    echo "Public key (hex) audi : $audi_key"
+    echo "Public key (hex) babe : $babe_key"
+    echo "Public key (hex) slow : $slow_key"
+    echo "Public key (hex) gran : $gran_key"
+
+    # Wait for user confirmation
+    read -p "Press Enter to continue..."
+
+    # Create /etc/ghost directory if it doesn't exist
+    echo "Creating /etc/ghost directory if it does not exist..."
+    sudo mkdir -p /etc/ghost
+
+    # Navigate to the Ghost node directory
+    GHOST_NODE_DIR="/root/ghost/ghost-node"
+    if [ -d "$GHOST_NODE_DIR" ]; then
+        echo "Navigating to $GHOST_NODE_DIR..."
+        cd "$GHOST_NODE_DIR" || { echo "Failed to navigate to $GHOST_NODE_DIR."; return 1; }
+    else
+        echo "Error: Directory $GHOST_NODE_DIR does not exist."
+        return 1
+    fi
+
+    # Pull latest changes from Git and create a new branch
+    echo "Fetching the latest changes from Git..."
+    git pull origin main
+    read -p "Enter the branch name to create: " branch_name
+    git checkout -b "$branch_name"
+
+    # Update service/ghosties file
+    SERVICE_FILE="$GHOST_NODE_DIR/service/ghosties"
+    echo "Updating $SERVICE_FILE with wallet details..."
+    {
+        echo "### My Submission for Genesis Code - Satoshi ###"
+        echo "Local identity             : $local_identity"
+        echo "Public key (hex) wallet    : $wallet_key"
+        echo "=================================================================================================================="
+        echo "Public key (hex) stash     : $stash_key"
+        echo "Public key (hex) audi      : $audi_key"
+        echo "Public key (hex) babe      : $babe_key"
+        echo "Public key (hex) slow      : $slow_key"
+        echo "Public key (hex) gran      : $gran_key"
+    } > "$SERVICE_FILE"
+
+    # Confirmation message
+    echo "Keys updated in Ghost server successfully."
+
+    # Call the Master function to display the menu
+    master
+}
+
+
+
+
+
+
+
 
 
 # Function to display menu and prompt user for input
@@ -380,7 +466,8 @@ master() {
     print_info "5. Service-Setup" 
     print_info "6. Create-Wallet"
     print_info "7. Save-Keys"
-    print_info "8. Exit"
+    print_info "8. Keys-Update-Server"
+    print_info "9. "
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
@@ -411,6 +498,9 @@ master() {
             save_keys
             ;;
         8)
+            keys_update_server
+            ;;
+        9)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
