@@ -109,6 +109,18 @@ install_dependency() {
     sleep 1 // wait 1 secound
     rustup +nightly show
 
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    sudo systemctl enable ssh
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    sudo apt install ufw
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    sudo ufw allow ssh
+    print_info "Please wait ..."
+    sleep 1 // wait 1 secound
+    sudo ufw enable
     print_info "Allow Port 30333..."
     sudo ufw numbered
     print_info "Please wait ..."
