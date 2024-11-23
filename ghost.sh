@@ -64,7 +64,7 @@ install_dependency() {
     # Check if Rust is install
     print_info "Installing Rust..."
     # Download and run the custom Rust installation script
-     wget https://raw.githubusercontent.com/CryptoBureau01/packages/main/packages/rust-setup.sh && chmod +x rust-setup.sh && sudo ./rust-setup.sh
+     #wget https://raw.githubusercontent.com/CryptoBureau01/packages/main/packages/rust-setup.sh && chmod +x rust-setup.sh && sudo ./rust-setup.sh
      # Check for installation errors
      if [ $? -ne 0 ]; then
         print_error "Failed to install Rust. Please check your system for issues."
