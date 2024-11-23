@@ -55,10 +55,10 @@ install_dependency() {
     print_info "Updating and upgrading system packages, and installing curl..."
     sudo apt update && sudo apt upgrade -y && sudo apt install screen build-essential clang make git wget curl -y 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo apt install --assume-yes git clang curl libssl-dev protobuf-compiler
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo apt install --assume-yes git clang curl libssl-dev llvm libudev-dev make protobuf-compiler
 
     # Check if Rust is install
@@ -75,28 +75,28 @@ install_dependency() {
      sudo rm -rf rust-setup.sh
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     # Rust Update 
     rustup update
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     # Update Nightly
     rustup update nightly
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     rustup target add wasm32-unknown-unknown --toolchain nightly
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     rustup target add wasm32-unknown-unknown --toolchain stable-x86_64-unknown-linux-gnu
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     rustup target add wasm32-unknown-unknown --toolchain default
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     rustup component add rust-src --toolchain stable
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     rustup component add rust-src --toolchain default
     
     # Print Rust versions to confirm installation
@@ -106,28 +106,28 @@ install_dependency() {
     print_info "Checking Rust version Show..."
     rustup show
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     rustup +nightly show
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo systemctl enable ssh
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo apt install ufw
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo ufw allow ssh
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo ufw enable
     print_info "Allow Port 30333..."
     sudo ufw numbered
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo ufw enable
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     sudo ufw allow 30333
 
     # Call the Master function to display the menu
@@ -188,20 +188,20 @@ connect_node() {
         wget -c https://ghostchain.io/wp-content/uploads/2024/09/spec.json -O ~/spec.json
 
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         # Git commands to update the repository
         echo "Switching to main branch and updating the repository..."
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         git switch main
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         git pull origin main
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         git fetch --tags
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         git checkout v0.0.2
 
     else
@@ -215,7 +215,7 @@ connect_node() {
 }
 
 
-# Function to set up services
+# Function to set up services add enter all details 
 services_setup() {
     # Create /etc/ghost directory
     echo "Creating /etc/ghost directory..."
@@ -234,7 +234,7 @@ services_setup() {
         echo "Starter script executed successfully."
 
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         # Step 4: Run the starter script to set arguments
         echo "Running the starter script to set arguments..."
         ./scripts/starter.sh --set-arguments
@@ -419,7 +419,7 @@ keys_update_server() {
     read -p "Press Enter to continue..."
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
 
     # Navigate to the Ghost node directory
     GHOST_NODE_DIR="/root/ghost/ghost-node"
@@ -432,18 +432,18 @@ keys_update_server() {
     fi
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     
     # Pull latest changes from Git and create a new branch
     echo "Fetching the latest changes from Git..."
     git pull origin main
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     read -p "Enter the branch name to create: " branch_name
     git checkout -b "$branch_name"
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     # Check if the git.txt file exists, and either create or update it
     GIT_FILE="/root/ghost/ghost-node/git.txt"
     if [ -f "$GIT_FILE" ]; then
@@ -513,7 +513,7 @@ git_ssh_key() {
         echo "SSH key pair generated successfully."
 
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         
         # Save the public key to git.txt with label "SSH key"
         echo "Saving the SSH key to $git_txt..."
@@ -527,7 +527,7 @@ git_ssh_key() {
         echo "Git SSH key has been generated and is ready for use." > "$git_password_file"
 
         print_info "Please wait ..."
-        sleep 1 // wait 1 secound
+        sleep 1 
         
         # Save the Git Password message to git.txt
         echo "Git Password:" >> "$git_txt"
@@ -540,7 +540,7 @@ git_ssh_key() {
     fi
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     
     # Copy the keys to the /root/.ssh/ directory with user-provided naming
     echo "Copying the SSH keys to /root/.ssh/..."
@@ -550,7 +550,7 @@ git_ssh_key() {
     echo "SSH keys copied to /root/.ssh/ with the same names provided by the user."
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     
     # Copy the keys to the /root/ghost/ghost-node/ directory with user-provided naming
     echo "Copying the SSH keys to /root/ghost/ghost-node/..."
@@ -560,7 +560,7 @@ git_ssh_key() {
     echo "SSH keys copied to /root/ghost/ghost-node/ with the same names provided by the user."
 
     print_info "Please wait ..."
-    sleep 1 // wait 1 secound
+    sleep 1 
     
     # Configure git to use the SSH key
     git config --global gpg.format ssh
@@ -573,10 +573,95 @@ git_ssh_key() {
 }
 
 
+key_checker() {
+    # Define the target working directory
+    WORKING_DIR="/root/ghost/ghost-node"
+
+    echo "Navigating to $WORKING_DIR..."
+    cd "$WORKING_DIR" || { echo "Error: Unable to access $WORKING_DIR. Please check if it exists."; exit 1; }
+
+    # Run the command
+    echo "Running ./scripts/starter.sh with --check-keys and --insert-keys options..."
+    ./scripts/starter.sh --check-keys --insert-keys
+
+    # Check if the command was successful
+    if [ $? -eq 0 ]; then
+        echo "Command executed successfully."
+    else
+        echo "Error: Command failed. Please check the script or logs for more details."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+
+start_service() {
+    echo "Starting the ghost-node service..."
+
+    # Run the command to start the service
+    sudo systemctl start ghost-node
+
+    # Check if the service started successfully
+    if [ $? -eq 0 ]; then
+        echo "ghost-node service started successfully."
+    else
+        echo "Error: Failed to start the ghost-node service. Please check the service status for details."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+
+enable_service() {
+    echo "Enabling the ghost-node service to start at boot..."
+
+    # Run the command to enable the service
+    sudo systemctl enable ghost-node
+
+    # Check if the service was enabled successfully
+    if [ $? -eq 0 ]; then
+        echo "ghost-node service enabled successfully."
+    else
+        echo "Error: Failed to enable the ghost-node service. Please check the service configuration."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
 
 
 
+restart_service() {
+    echo "Restarting the ghost-node service..."
 
+    # Run the command to restart the service
+    sudo systemctl restart ghost-node
+
+    # Check if the service was restarted successfully
+    if [ $? -eq 0 ]; then
+        echo "ghost-node service restarted successfully."
+    else
+        echo "Error: Failed to restart the ghost-node service. Please check the service logs for details."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+
+logs_checker() {
+    echo "Checking logs for the ghost-node service..."
+
+    # Run the command to monitor the logs
+    sudo journalctl -f -u ghost-node
+
+    # Note: The above command will continue to show logs in real-time until stopped.
+
+    # Call the Master function to display the menu
+    master
+}
 
 
 # Function to display menu and prompt user for input
@@ -594,13 +679,19 @@ master() {
     print_info "7. Save-Keys"
     print_info "8. Keys-Update-Server"
     print_info "9. Git-SSH-Keys"
-    print_info "10. "
+    print_info "10. Keys-Checker"
+    print_info "11. Enable-Service"
+    print_info "12. Start-Service"
+    print_info "13. Restart-Service"
+    print_info "14. Logs-Checker"
+    print_info "15. Exit"
+    print_info ""
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 8): " user_choice
+    read -p "Enter your choice (1 or 15): " user_choice
 
     case $user_choice in
         1)
@@ -631,10 +722,25 @@ master() {
             git_ssh_key
             ;;
         10)
+            key_checker
+            ;;
+        11)
+            enable_service
+            ;;
+        12)
+            start_service
+            ;;
+        13)
+            restart_service
+            ;;
+        14)
+            logs_checker
+            ;;
+        15)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 10 : "
+            print_error "Invalid choice. Please enter 1 or 15 : "
             ;;
     esac
 }
