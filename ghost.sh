@@ -56,11 +56,8 @@ install_dependency() {
     sudo apt update && sudo apt upgrade -y && sudo apt install screen build-essential clang make git wget curl -y 
     print_info "Please wait ..."
     sleep 1 
-    sudo apt install --assume-yes git clang curl libssl-dev protobuf-compiler
-    print_info "Please wait ..."
-    sleep 1 
-    sudo apt install --assume-yes git clang curl libssl-dev llvm libudev-dev make protobuf-compiler
-
+    sudo apt install --assume-yes git clang curl libssl-dev protobuf-compiler llvm make traceroute
+   
     # Check if Rust is install
     print_info "Installing Rust..."
     # Download and run the custom Rust installation script
@@ -129,6 +126,9 @@ install_dependency() {
     print_info "Please wait ..."
     sleep 1 
     sudo ufw allow 30333
+    print_info "Please wait ..."
+    sleep 1
+    sudo ufw deny 9945
 
     # Call the Master function to display the menu
     master
@@ -148,6 +148,38 @@ install_node() {
     master
 }
 
+# Function to install traceroute and manage firewall rules
+bind_NAT() {
+    echo "Installing traceroute..."
+    sudo apt update && sudo apt install -y traceroute
+    if [ $? -eq 0 ]; then
+        echo "Traceroute installed successfully."
+    else
+        echo "Failed to install traceroute. Exiting."
+        exit 1
+    fi
+
+    echo "Allowing port 30333..."
+    sudo ufw allow 30333
+    if [ $? -eq 0 ]; then
+        echo "Port 30333 allowed successfully."
+    else
+        echo "Failed to allow port 30333."
+    fi
+
+    echo "Denying port 9945..."
+    sudo ufw deny 9945
+    if [ $? -eq 0 ]; then
+        echo "Port 9945 denied successfully."
+    else
+        echo "Failed to deny port 9945."
+    fi
+
+    echo "Bind-NAT function completed."
+
+    # Call the Master function to display the menu
+    master
+}
 
 # Function to check directory and run build command
 setup_node() {
@@ -595,6 +627,40 @@ key_checker() {
     master
 }
 
+# Function to check VPS IP, traceroute, and port binding
+Nat_bind_checker() {
+    # Get the VPS IP address
+    echo "Fetching VPS IP address..."
+    VPS_IP=$(curl -s ifconfig.me)
+    
+    if [ -z "$VPS_IP" ]; then
+        echo "Failed to fetch VPS IP address. Exiting."
+        exit 1
+    fi
+
+    echo "Your VPS IP is: $VPS_IP"
+
+    # Perform traceroute to the VPS IP
+    echo "Running traceroute for VPS IP: $VPS_IP"
+    traceroute "$VPS_IP"
+    if [ $? -ne 0 ]; then
+        echo "Traceroute failed. Exiting."
+        exit 1
+    fi
+
+    # Check if port 30333 is bound to Ghost node
+    echo "Checking if port 30333 is bound to Ghost node..."
+    BIND_CHECK=$(sudo netstat -tuln | grep ":30333")
+
+    if [[ -n "$BIND_CHECK" ]]; then
+        echo "Port 30333 is successfully bound to Ghost node."
+    else
+        echo "Port 30333 is not bound. Please check your node configuration."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
 
 start_service() {
     echo "Starting the ghost-node service..."
@@ -605,6 +671,24 @@ start_service() {
     # Check if the service started successfully
     if [ $? -eq 0 ]; then
         echo "ghost-node service started successfully."
+    else
+        echo "Error: Failed to start the ghost-node service. Please check the service status for details."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+
+stop_service() {
+    echo "Stop the ghost-node service..."
+
+    # Run the command to stop the service
+    sudo systemctl stop ghost-node
+
+    # Check if the service started successfully
+    if [ $? -eq 0 ]; then
+        echo "ghost-node service stoped successfully."
     else
         echo "Error: Failed to start the ghost-node service. Please check the service status for details."
     fi
@@ -631,6 +715,23 @@ enable_service() {
     master
 }
 
+
+status_service() {
+    echo "Enabling the ghost-node service to status..."
+
+    # Run the command to status the service
+    sudo systemctl status ghost-node
+
+    # Check if the service was status successfully
+    if [ $? -eq 0 ]; then
+        echo "ghost-node service status successfully."
+    else
+        echo "Error: Failed to enable the ghost-node status. Please check the service configuration."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
 
 
 restart_service() {
@@ -672,26 +773,30 @@ master() {
     print_info ""
     print_info "1. Install-Dependency"
     print_info "2. Install-Ghost"
-    print_info "3. Setup-Ghost"
-    print_info "4. Connect-Ghost"
-    print_info "5. Service-Setup" 
-    print_info "6. Create-Wallet"
-    print_info "7. Save-Keys"
-    print_info "8. Keys-Update-Server"
-    print_info "9. Git-SSH-Keys"
-    print_info "10. Keys-Checker"
-    print_info "11. Enable-Service"
-    print_info "12. Start-Service"
-    print_info "13. Restart-Service"
-    print_info "14. Logs-Checker"
-    print_info "15. Exit"
+    print_info "3. Bind-NAT"
+    print_info "4. Setup-Ghost"
+    print_info "5. Connect-Ghost"
+    print_info "6. Service-Setup" 
+    print_info "7. Create-Wallet"
+    print_info "8. Save-Keys"
+    print_info "9. Keys-Update-Server"
+    print_info "10. Git-SSH-Keys"
+    print_info "11. Keys-Checker"
+    print_info "12. NAT-Bind-Checker"
+    print_info "13. Enable-Service"
+    print_info "14. Start-Service"
+    print_info "15. Stop-Service"
+    print_info "16. Restart-Service"
+    print_info "17. Status-Checker"
+    print_info "18. Logs-Checker"
+    print_info "19. Exit"
     print_info ""
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 15): " user_choice
+    read -p "Enter your choice (1 or 19): " user_choice
 
     case $user_choice in
         1)
@@ -701,46 +806,58 @@ master() {
             install_node
             ;;
         3) 
-            setup_node
+            bind_NAT
             ;;
         4)
-            connect_node
+            setup_node
             ;;
         5)
-            services_setup
+            connect_node
             ;;
         6)
-            create_wallet
+            services_setup
             ;;
         7)
-            save_keys
+            create_wallet
             ;;
         8)
-            keys_update_server
+            save_keys
             ;;
         9)
-            git_ssh_key
+            keys_update_server
             ;;
         10)
-            key_checker
+            git_ssh_key
             ;;
         11)
-            enable_service
+            key_checker
             ;;
         12)
-            start_service
+            Nat_bind_checker
             ;;
         13)
-            restart_service
+            enable_service
             ;;
         14)
-            logs_checker
+            start_service
             ;;
         15)
+            stop_service
+            ;;
+        16)
+            restart_service
+            ;;
+        17)
+            status_service
+            ;;
+        18)
+            logs_checker
+            ;;
+        19)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 15 : "
+            print_error "Invalid choice. Please enter 1 or 19 : "
             ;;
     esac
 }
