@@ -61,7 +61,7 @@ install_dependency() {
     # Check if Rust is install
     print_info "Installing Rust..."
     # Download and run the custom Rust installation script
-     #wget https://raw.githubusercontent.com/CryptoBureau01/packages/main/packages/rust-setup.sh && chmod +x rust-setup.sh && sudo ./rust-setup.sh
+     wget https://raw.githubusercontent.com/CryptoBureau01/packages/main/packages/rust-setup.sh && chmod +x rust-setup.sh && sudo ./rust-setup.sh
      # Check for installation errors
      if [ $? -ne 0 ]; then
         print_error "Failed to install Rust. Please check your system for issues."
@@ -248,7 +248,7 @@ connect_node() {
 
 
 # Function to set up services add enter all details 
-services_setup() {
+services_build() {
     # Create /etc/ghost directory
     echo "Creating /etc/ghost directory..."
     sudo mkdir -p /etc/ghost
@@ -263,6 +263,34 @@ services_setup() {
         # Run the starter script
         echo "Running the starter script to make the service global..."
         ./scripts/starter.sh --make-global
+        echo "Starter script executed successfully."
+    else
+        echo "Error: Directory $GHOST_NODE_DIR does not exist."
+        echo "Please run the setup_node function first."
+        exit 1
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+
+# Function to set up services add enter all details 
+services_setup() {
+    # Create /etc/ghost directory
+    echo "Creating /etc/ghost directory..."
+    sudo mkdir -p /etc/ghost
+
+    # Navigate to the Ghost node directory
+    GHOST_NODE_DIR="/root/ghost/ghost-node"
+
+    if [ -d "$GHOST_NODE_DIR" ]; then
+        echo "Directory $GHOST_NODE_DIR exists."
+        cd "$GHOST_NODE_DIR"
+
+        # Run the starter script
+        echo "Running the starter script to make the service global..."
+        sha256sum /etc/ghost/casper.json
         echo "Starter script executed successfully."
 
         print_info "Please wait ..."
@@ -776,27 +804,28 @@ master() {
     print_info "3. Bind-NAT"
     print_info "4. Setup-Ghost"
     print_info "5. Connect-Ghost"
-    print_info "6. Service-Setup" 
-    print_info "7. Create-Wallet"
-    print_info "8. Save-Keys"
-    print_info "9. Keys-Update-Server"
-    print_info "10. Git-SSH-Keys"
-    print_info "11. Keys-Checker"
-    print_info "12. NAT-Bind-Checker"
-    print_info "13. Enable-Service"
-    print_info "14. Start-Service"
-    print_info "15. Stop-Service"
-    print_info "16. Restart-Service"
-    print_info "17. Status-Checker"
-    print_info "18. Logs-Checker"
-    print_info "19. Exit"
+    print_info "6. Service-Build" 
+    print_info "7. Service-Setup"
+    print_info "8. Create-Wallet"
+    print_info "9. Save-Keys"
+    print_info "10. Keys-Update-Server"
+    print_info "11. Git-SSH-Keys"
+    print_info "12. Keys-Checker"
+    print_info "13. NAT-Bind-Checker"
+    print_info "14. Enable-Service"
+    print_info "15. Start-Service"
+    print_info "16. Stop-Service"
+    print_info "17. Restart-Service"
+    print_info "18. Status-Checker"
+    print_info "19. Logs-Checker"
+    print_info "20. Exit"
     print_info ""
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 19): " user_choice
+    read -p "Enter your choice (1 or 20): " user_choice
 
     case $user_choice in
         1)
@@ -815,49 +844,52 @@ master() {
             connect_node
             ;;
         6)
-            services_setup
+            services_build
             ;;
         7)
-            create_wallet
+            services_setup
             ;;
         8)
-            save_keys
+            create_wallet
             ;;
         9)
-            keys_update_server
+            save_keys
             ;;
         10)
-            git_ssh_key
+            keys_update_server
             ;;
         11)
-            key_checker
+            git_ssh_key
             ;;
         12)
-            Nat_bind_checker
+            key_checker
             ;;
         13)
-            enable_service
+            Nat_bind_checker
             ;;
         14)
-            start_service
+            enable_service
             ;;
         15)
-            stop_service
+            start_service
             ;;
         16)
-            restart_service
+            stop_service
             ;;
         17)
-            status_service
+            restart_service
             ;;
         18)
-            logs_checker
+            status_service
             ;;
         19)
+            logs_checker
+            ;;
+        20)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 19 : "
+            print_error "Invalid choice. Please enter 1 or 20 : "
             ;;
     esac
 }
