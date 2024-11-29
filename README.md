@@ -60,17 +60,35 @@ The script provides an interactive menu with the following options:
    Configures NAT settings and sets up port bindings for the node.
 
 4. **Setup-Ghost**  
-   Guides the user through the Ghost node setup process.
+  
+   The **Setup-Ghost** option builds the Ghost node:
+
+   - **Directory Check**: Ensures `/root/ghost/ghost-node` exists; otherwise, prompts an error.  
+   - **Build Process**: Starts `cargo build --release` in a detached screen session named `ghost_build`, allowing the process to run in the background (takes ~60 minutes).  
+   - **Monitor Build**: Use `screen -r ghost_build` to view progress; detach with `Ctrl + A + D`.  
+   - **Error Handling**: If the directory is missing, the script exits with instructions to set up the node first.
 
 5. **Connect-Ghost**  
    Connects the Ghost node to the blockchain network.
 
 6. **Service-Build**  
-   Creates service files required to manage the Ghost node as a system service.
+   User Input: During execution, the user is prompted with "Rebuild GHOST Node type: Y" and must type Y to proceed.
 
 7. **Service-Setup**  
-   Sets up the Ghost node service and allows the user to configure parameters like gas fee.
+ 
+   The **Service-Setup** option sets up the Ghost node service with specific arguments:
 
+   - **Directory Creation**: Creates the `/etc/ghost` directory if it doesn't exist.  
+   - **Directory Check**: Verifies that the Ghost node directory (`/root/ghost/ghost-node`) exists. If not, it exits with instructions to run the `setup_node` function first.  
+   - **SHA256 Checksum**: Runs a checksum on `/etc/ghost/casper.json` for verification.  
+   - **Starter Script Execution**: 
+     - First, runs the script with `--set-arguments` to configure the necessary arguments.
+     - Prompts the user during execution:  
+       - **Disable bootnode mode [y/N]**: User must type **y** to disable the bootnode mode.  
+       - **Boot node address**: User will be prompted to paste the following address:  
+      ```/dns/bootnode69.chain.ghostchain.io/tcp/30334/p2p/12D3KooWF9SWxz9dmy6vfndQhoxqCa7PESaoFWEiF8Jkqh4xKDRf``` 
+   - **Completion**: Displays a success message after the script runs.
+   
 8. **Create-Wallet**  
    Helps the user create a new wallet for the Ghost node.
 
