@@ -53,7 +53,7 @@ master_fun() {
 install_dependency() {
     print_info "<=========== Install Dependency ==============>"
     print_info "Updating and upgrading system packages, and installing curl..."
-    sudo apt update && sudo apt upgrade -y && sudo apt install screen build-essential clang make git wget curl -y 
+    sudo apt update && sudo apt upgrade -y && sudo apt install screen nano net-tools build-essential clang make git wget jq curl -y 
     print_info "Please wait ..."
     sleep 1 
     sudo apt install --assume-yes git clang curl libssl-dev protobuf-compiler llvm make traceroute
