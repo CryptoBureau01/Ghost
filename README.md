@@ -57,7 +57,7 @@ The script provides an interactive menu with the following options:
    Downloads and installs the Ghost node software.
 
 3. **Bind-NAT**  
-   Configures NAT settings and sets up port bindings for the node.
+   Configures NAT settings and sets up port 30333 , 9945 bindings for the node.
 
 4. **Setup-Ghost**  
   
@@ -107,17 +107,35 @@ The script provides an interactive menu with the following options:
       ```
    This will open the `wallet.txt` file in the `nano` editor, allowing the user to view or make changes to the keys.
 
-10. **Keys-Update-Server**  
-    Updates the node's server with the latest wallet credentials.
+10. **Keys-Update-Server** 
 
-11. **Git-SSH-Keys**  
-    Configures and saves SSH keys for GitHub integration.
+    The **Keys-Update-Server** function allows the user to update their keys on the server:
+
+      - **Branch Name**: First, the user is prompted with the following message:
+        ```
+         Enter the branch name to create:
+        ```
+      The user should enter their desired branch name. This could be any name they choose for their branch.
+
+    Once the user inputs the branch name, the script will proceed to update the keys on the server with the specified branch name.
+
+11. **Git-SSH-Keys**
+
+    The **Git-SSH-Keys** function prompts the user to enter the SSH key name:
+
+      - **SSH Key Name**: The user will be asked to input their SSH key name with the following message:
+        ```
+         Enter the SSH key name (default is $default_key):
+        ```
+      The user can either press **Enter** to use the default key name or provide their custom SSH key name. 
+
+     After the user provides the key name, the script proceeds to configure the SSH key for the Git repository.
 
 12. **Keys-Checker**  
     Verifies the saved keys for correctness and usability.
 
 13. **NAT-Bind-Checker**  
-    Checks if the NAT configuration is correctly set up and ports are bound.
+    Checks if the NAT configuration is correctly set up and port 30333 , 9945 are bound.
 
 14. **Enable-Service**  
     Enables the Ghost node service for automatic startup on reboot.
