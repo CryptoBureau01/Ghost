@@ -86,17 +86,26 @@ The script provides an interactive menu with the following options:
      - Prompts the user during execution:  
        - **Disable bootnode mode [y/N]**: User must type **y** to disable the bootnode mode.  
        - **Boot node address**: User will be prompted to paste the following address:
-      ```bash
-       /dns/bootnode69.chain.ghostchain.io/tcp/30334/p2p/12D3KooWF9SWxz9dmy6vfndQhoxqCa7PESaoFWEiF8Jkqh4xKDRf
-      ```
+         ```bash
+          /dns/bootnode69.chain.ghostchain.io/tcp/30334/p2p/12D3KooWF9SWxz9dmy6vfndQhoxqCa7PESaoFWEiF8Jkqh4xKDRf
+         ```
      
    - **Completion**: Displays a success message after the script runs.
    
 8. **Create-Wallet**  
    Helps the user create a new wallet for the Ghost node.
 
-9. **Save-Keys**  
-   Saves wallet keys securely for future use and reference.
+9. **Save-Keys** 
+
+   The **Save-Keys** option allows the user to view and manage their Ghost node keys:
+
+    - **Key Location**: The user's keys are saved in the file located at `/root/ghost/ghost-node/wallet.txt`.
+    - **Check Keys**: The user can check their saved keys by navigating to this file.
+    - **Edit Keys**: To view or edit the keys, the user can use the following command:
+      ```bash
+       nano /root/ghost/ghost-node/wallet.txt
+      ```
+   This will open the `wallet.txt` file in the `nano` editor, allowing the user to view or make changes to the keys.
 
 10. **Keys-Update-Server**  
     Updates the node's server with the latest wallet credentials.
