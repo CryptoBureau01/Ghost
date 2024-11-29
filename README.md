@@ -85,8 +85,11 @@ The script provides an interactive menu with the following options:
      - First, runs the script with `--set-arguments` to configure the necessary arguments.
      - Prompts the user during execution:  
        - **Disable bootnode mode [y/N]**: User must type **y** to disable the bootnode mode.  
-       - **Boot node address**: User will be prompted to paste the following address:  
-      ```/dns/bootnode69.chain.ghostchain.io/tcp/30334/p2p/12D3KooWF9SWxz9dmy6vfndQhoxqCa7PESaoFWEiF8Jkqh4xKDRf``` 
+       - **Boot node address**: User will be prompted to paste the following address:
+      ```bash
+       /dns/bootnode69.chain.ghostchain.io/tcp/30334/p2p/12D3KooWF9SWxz9dmy6vfndQhoxqCa7PESaoFWEiF8Jkqh4xKDRf
+      ```
+     
    - **Completion**: Displays a success message after the script runs.
    
 8. **Create-Wallet**  
