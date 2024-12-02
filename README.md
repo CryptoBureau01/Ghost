@@ -134,28 +134,31 @@ The script provides an interactive menu with the following options:
 12. **Keys-Checker**  
     Verifies the saved keys for correctness and usability.
 
-13. **NAT-Bind-Checker**  
+13. **Unit-Start**
+    setup service file in system
+    
+14. **NAT-Bind-Checker**  
     Checks if the NAT configuration is correctly set up and port 30333 , 9945 are bound.
 
-14. **Enable-Service**  
+15. **Enable-Service**  
     Enables the Ghost node service for automatic startup on reboot.
 
-15. **Start-Service**  
+16. **Start-Service**  
     Starts the Ghost node service.
 
-16. **Stop-Service**  
+17. **Stop-Service**  
     Stops the running Ghost node service.
 
-17. **Restart-Service**  
+18. **Restart-Service**  
     Restarts the Ghost node service for applying changes.
 
-18. **Status-Checker**  
+19. **Status-Checker**  
     Checks the status of the Ghost node service.
 
-19. **Logs-Checker**  
+20. **Logs-Checker**  
     Displays the latest logs to monitor the Ghost node's performance or troubleshoot issues.
 
-20. **Exit**  
+21. **Exit**  
     Exits the script and ends the session.
 
 
