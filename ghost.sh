@@ -339,7 +339,7 @@ create_wallet() {
 
     # Display Wallet Key
     echo "Displaying Wallet Key:"
-    ~/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/wallet-key)
+    ~/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/wallet-key) --scheme=ed25519
     read -p "Press Enter to continue..."
 
     # Step 4: Generate Stash Key
@@ -350,7 +350,7 @@ create_wallet() {
 
     # Display Stash Key
     echo "Displaying Stash Key:"
-    ~/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/stash-key)
+    ~/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/stash-key) --scheme=ed25519
     read -p "Press Enter to continue..."
 
     # Step 5: Generate Session Key
@@ -361,15 +361,15 @@ create_wallet() {
 
     # Display Session Keys
     echo "Displaying Session Key - AUDI:"
-    ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//audi"
+    ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//audi" --scheme=ed25519
     read -p "Press Enter to continue..."
 
     echo "Displaying Session Key - BABE:"
-    ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//babe"
+    ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//babe" --scheme=ed25519
     read -p "Press Enter to continue..."
 
     echo "Displaying Session Key - SLOW:"
-    ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//slow"
+    ~/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//slow" --scheme=ed25519
     read -p "Press Enter to continue..."
 
     echo "Displaying Session Key - GRAN:"
