@@ -388,57 +388,56 @@ create_wallet() {
 
 save_keys() {
     # Check if wallet.txt already exists
-    if [ -f "/root/ghost/ghost-node/wallet.txt" ]; then
+    if [ -f "/root/wallet.txt" ]; then
         echo "File wallet.txt already exists. Skipping creation..."
     else
         echo "Creating wallet.txt file..."
-        mkdir -p /root/ghost/ghost-node
-        touch /root/ghost/ghost-node/wallet.txt
+        touch /root/wallet.txt
         echo "File wallet.txt created successfully."
     fi
 
     # Append outputs of all commands to wallet.txt
-    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
-    echo "                       Ghost Saving Keys Details                                     " >> /root/ghost/ghost-node/wallet.txt
-    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "=====================================================================================" >> /root/wallet.txt
+    echo "                       Ghost Saving Keys Details                                     " >> /root/wallet.txt
+    echo "=====================================================================================" >> /root/wallet.txt
 
     echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
     # Save Node Key Inspection Output
-    echo "Inspecting Node Key:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect-node-key --bin --file=/etc/ghost/node-key >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Node Key:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect-node-key --bin --file=/etc/ghost/node-key >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
     
     # Save Wallet Key Inspection Output
-    echo "Inspecting Wallet Key:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/wallet-key) >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Wallet Key:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/wallet-key) >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
     
     # Save Stash Key Inspection Output
-    echo "Inspecting Stash Key:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/stash-key) >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Stash Key:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect $(cat /etc/ghost/stash-key) >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
     
     # Save Session Keys Inspection Outputs
-    echo "Inspecting Session Key - AUDI:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//audi" >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Session Key - AUDI:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//audi" >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
     
-    echo "Inspecting Session Key - BABE:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//babe" >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Session Key - BABE:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//babe" >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
     
-    echo "Inspecting Session Key - SLOW:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//slow" >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Session Key - SLOW:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//slow" >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
     
-    echo "Inspecting Session Key - GRAN:" >> /root/ghost/ghost-node/wallet.txt
-    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//gran" >> /root/ghost/ghost-node/wallet.txt 2>&1
-    echo -e "\n\n" >> /root/ghost/ghost-node/wallet.txt
-    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
-    echo "                      Ghost Keys Saved Successfully                                  " >> /root/ghost/ghost-node/wallet.txt
-    echo "=====================================================================================" >> /root/ghost/ghost-node/wallet.txt
+    echo "Inspecting Session Key - GRAN:" >> /root/wallet.txt
+    /root/ghost/ghost-node/target/release/ghost key inspect "$(cat /etc/ghost/session-key)//gran" >> /root/wallet.txt 2>&1
+    echo -e "\n\n" >> /root/wallet.txt
+    echo "=====================================================================================" >> /root/wallet.txt
+    echo "                      Ghost Keys Saved Successfully                                  " >> /root/wallet.txt
+    echo "=====================================================================================" >> /root/wallet.txt
 
-    echo "All keys' details have been saved to /root/ghost/ghost-node/wallet.txt"
+    echo "All keys' details have been saved to /root/wallet.txt"
 
     # Call the Master function to display the menu
     master
@@ -446,10 +445,10 @@ save_keys() {
 
 
 keys_update_server() {
-    echo "Reading wallet details from /root/ghost/ghost-node/wallet.txt..."
+    echo "Reading wallet details from /root/wallet.txt..."
     
     # Define wallet file path
-    WALLET_FILE="/root/ghost/ghost-node/wallet.txt"
+    WALLET_FILE="/root/wallet.txt"
 
     # Check if wallet file exists
     if [ ! -f "$WALLET_FILE" ]; then
@@ -505,7 +504,7 @@ keys_update_server() {
     print_info "Please wait ..."
     sleep 1 
     # Check if the git.txt file exists, and either create or update it
-    GIT_FILE="/root/ghost/ghost-node/git.txt"
+    GIT_FILE="/root/git.txt"
     if [ -f "$GIT_FILE" ]; then
         echo "File exists. Updating branch name..."
     else
@@ -543,7 +542,7 @@ git_ssh_key() {
     # Define paths for the keys and files
     ghost_node_dir="/root/ghost/ghost-node"
     ssh_dir="/root/.ssh"
-    git_txt="$ghost_node_dir/git.txt"
+    git_txt="/root/git.txt"
     git_password_file="$ghost_node_dir/Git_Password"
 
     # Ensure the /root/ghost/ghost-node folder exists
@@ -649,6 +648,36 @@ key_checker() {
         echo "Command executed successfully."
     else
         echo "Error: Command failed. Please check the script or logs for more details."
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+# Function to set up services add enter all details 
+unit_start() {
+    # Create /etc/ghost directory
+    echo "Creating /etc/ghost directory..."
+    sudo mkdir -p /etc/ghost
+
+    # Navigate to the Ghost node directory
+    GHOST_NODE_DIR="/root/ghost/ghost-node"
+
+    if [ -d "$GHOST_NODE_DIR" ]; then
+        echo "Directory $GHOST_NODE_DIR exists."
+        cd "$GHOST_NODE_DIR"
+        
+        print_info "Please wait ..."
+        sleep 1 
+        # Step 4: Run the starter script to set arguments
+        echo "Running the starter script to set arguments..."
+        ./scripts/starter.sh --unit-file
+        echo "Starter script '--un8t-file' executed successfully."
+        
+    else
+        echo "Error: Directory $GHOST_NODE_DIR does not exist."
+        echo "Please run the setup_node function first."
+        exit 1
     fi
 
     # Call the Master function to display the menu
@@ -811,21 +840,22 @@ master() {
     print_info "10. Keys-Update-Server"
     print_info "11. Git-SSH-Keys"
     print_info "12. Keys-Checker"
-    print_info "13. NAT-Bind-Checker"
-    print_info "14. Enable-Service"
-    print_info "15. Start-Service"
-    print_info "16. Stop-Service"
-    print_info "17. Restart-Service"
-    print_info "18. Status-Checker"
-    print_info "19. Logs-Checker"
-    print_info "20. Exit"
+    print_info "13. Unit-Start"
+    print_info "14. NAT-Bind-Checker"
+    print_info "15. Enable-Service"
+    print_info "16. Start-Service"
+    print_info "17. Stop-Service"
+    print_info "18. Restart-Service"
+    print_info "19. Status-Checker"
+    print_info "20. Logs-Checker"
+    print_info "21. Exit"
     print_info ""
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 20): " user_choice
+    read -p "Enter your choice (1 or 21): " user_choice
 
     case $user_choice in
         1)
@@ -865,31 +895,34 @@ master() {
             key_checker
             ;;
         13)
-            Nat_bind_checker
+            unit_start
             ;;
         14)
-            enable_service
+            Nat_bind_checker
             ;;
         15)
-            start_service
+            enable_service
             ;;
         16)
-            stop_service
+            start_service
             ;;
         17)
-            restart_service
+            stop_service
             ;;
         18)
-            status_service
+            restart_service
             ;;
         19)
-            logs_checker
+            status_service
             ;;
         20)
+            logs_checker
+            ;;
+        21)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 20 : "
+            print_error "Invalid choice. Please enter 1 or 21 : "
             ;;
     esac
 }
