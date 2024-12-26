@@ -13,6 +13,7 @@ ________________________________________________________________________________
 | **Bandwidth**| 60 MBit/s               |
 
 
+**Buy Contabo : https://contabo.com/en/vps/cloud-vps-1**
 
 **Follow our TG : https://t.me/CryptoBureau01**
 
@@ -99,11 +100,11 @@ The script provides an interactive menu with the following options:
 
    The **Save-Keys** option allows the user to view and manage their Ghost node keys:
 
-    - **Key Location**: The user's keys are saved in the file located at `/root/ghost/ghost-node/wallet.txt`.
+    - **Key Location**: The user's keys are saved in the file located at `/root/wallet.txt`.
     - **Check Keys**: The user can check their saved keys by navigating to this file.
     - **Edit Keys**: To view or edit the keys, the user can use the following command:
       ```bash
-       nano /root/ghost/ghost-node/wallet.txt
+       nano /root/wallet.txt
       ```
    This will open the `wallet.txt` file in the `nano` editor, allowing the user to view or make changes to the keys.
 
@@ -134,9 +135,9 @@ The script provides an interactive menu with the following options:
 12. **Keys-Checker**  
     Verifies the saved keys for correctness and usability.
 
-13. **Unit-Start**
+13. **Unit-Start** 
     setup service file in system
-    
+
 14. **NAT-Bind-Checker**  
     Checks if the NAT configuration is correctly set up and port 30333 , 9945 are bound.
 
@@ -149,16 +150,43 @@ The script provides an interactive menu with the following options:
 17. **Stop-Service**  
     Stops the running Ghost node service.
 
-18. **Restart-Service**  
+18. **Reconnect-Peers**
+
+    The Reconnect-Peers function is designed to restart and reconfigure the Ghost node by performing the following steps:
+
+    - Stops the Ghost node service.
+    - Cleans up old data and ensures the necessary folder structure exists.
+    - Updates the Ghost node software by switching to the main branch and pulling the latest changes.
+    - Starting the setup process
+        - Make Global Rebuild GHOST Node type y: User must type **y**
+    - Rebuilds and reinitializes the node with updated configurations.
+        - Setting unit file arguments
+        - Prompts the user during execution:  
+        - **Disable bootnode mode [y/N]**: User must type **y** to disable the bootnode mode.  
+        - **Boot node address**: User will be prompted to paste the following address:
+
+         ```bash
+          /dns/bootnode69.chain.ghostchain.io/tcp/30334/p2p/12D3KooWF9SWxz9dmy6vfndQhoxqCa7PESaoFWEiF8Jkqh4xKDRf
+         ```
+
+    - Restarts the node service and checks for key integrations.
+    - Ensures the node is running correctly by validating the setup and enabling the service.
+
+    This function is essential for maintaining the node's connectivity and ensuring it's updated and operational.
+
+19. **Restart-Service**  
     Restarts the Ghost node service for applying changes.
 
-19. **Status-Checker**  
+20. **Status-Checker**  
     Checks the status of the Ghost node service.
 
-20. **Logs-Checker**  
+21. **Account-ID**
+    The function sends a curl request to the local node and uses jq to extract the result field Account ID (Peer ID). 
+
+22. **Logs-Checker**  
     Displays the latest logs to monitor the Ghost node's performance or troubleshoot issues.
 
-21. **Exit**  
+23. **Exit**  
     Exits the script and ends the session.
 
 
@@ -171,4 +199,4 @@ This Auto Script for Node Management on the Ghost has been created by CryptoBuro
 # Author
 **Created by: CryptoBureau-Master**
 
-**Join our TG : https://t.me/CryptoBuroOfficial**
+**Join our TG : https://t.me/CryptoBureau01**
