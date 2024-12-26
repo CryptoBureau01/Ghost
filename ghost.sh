@@ -49,91 +49,112 @@ master_fun() {
 }
 
 
+# install rustc and cargo 
+rust_setup() {
+    # Step 1: Inform the user about the installation process
+    echo "Starting the Rust setup process..."
+    
+    # Step 2: Update the package index (optional but recommended)
+    echo "Updating package index..."
+    sudo apt update -y
+    
+    print_info "Please wait ..."
+    sleep 1
+    # Step 3: Install the Rust toolchain using rustup
+    echo "Installing Rust (rustc and cargo)..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+    print_info "Please wait ..."
+    sleep 1
+    # Step 4: Source the environment file to make Rust commands available
+    echo "Configuring Rust environment..."
+    source "$HOME/.cargo/env"
+
+    print_info "Please wait ..."
+    sleep 1
+    # Step 5: Verify the installation of rustc
+    echo "Verifying rustc installation..."
+    if command -v rustc > /dev/null 2>&1; then
+        echo "Rustc installed successfully. Version: $(rustc --version)"
+    else
+        echo "Error: Rustc installation failed!"
+        exit 1
+    fi
+
+    print_info "Please wait ..."
+    sleep 1
+    # Step 6: Verify the installation of cargo
+    echo "Verifying cargo installation..."
+    if command -v cargo > /dev/null 2>&1; then
+        echo "Cargo installed successfully. Version: $(cargo --version)"
+    else
+        echo "Error: Cargo installation failed!"
+        exit 1
+    fi
+
+    # Final Step: Inform the user that setup is complete
+    echo "Rust setup completed successfully!"
+}
+
+
 # Function to install dependencies
 install_dependency() {
     print_info "<=========== Install Dependency ==============>"
-    print_info "Updating and upgrading system packages, and installing curl..."
-    sudo apt update && sudo apt upgrade -y && sudo apt install screen nano net-tools build-essential clang make git wget jq curl -y 
+
+    # System Update and Installing Required Packages
+    print_info "Updating system and installing essential packages..."
+    sudo apt update && sudo apt upgrade -y
+    sudo apt install -y screen nano net-tools build-essential clang make git wget jq curl libssl-dev protobuf-compiler llvm traceroute
+
     print_info "Please wait ..."
     sleep 1 
-    sudo apt install --assume-yes git clang curl libssl-dev protobuf-compiler llvm make traceroute
-   
-    # Check if Rust is install
+
+    # Rust Installation with rust_setup function
     print_info "Installing Rust..."
-    # Download and run the custom Rust installation script
-     wget https://raw.githubusercontent.com/CryptoBureau01/packages/main/packages/rust-setup.sh && chmod +x rust-setup.sh && sudo ./rust-setup.sh
-     # Check for installation errors
-     if [ $? -ne 0 ]; then
-        print_error "Failed to install Rust. Please check your system for issues."
-        exit 1
-     fi
-
-     # Clean up installation script
-     sudo rm -rf rust-setup.sh
+    rust_setup || { echo "Rust setup failed! Exiting."; exit 1; }
 
     print_info "Please wait ..."
     sleep 1 
-    # Rust Update 
-    rustup update
-
-    print_info "Please wait ..."
-    sleep 1 
-    # Update Nightly
+    print_info "Updating Rust to the latest version..."
+    rustup update || { echo "Rust update failed! Exiting."; exit 1; }
     rustup update nightly
-    print_info "Please wait ..."
-    sleep 1 
     rustup target add wasm32-unknown-unknown --toolchain nightly
     print_info "Please wait ..."
     sleep 1 
     rustup target add wasm32-unknown-unknown --toolchain stable-x86_64-unknown-linux-gnu
     print_info "Please wait ..."
     sleep 1 
-    rustup target add wasm32-unknown-unknown --toolchain default
-    print_info "Please wait ..."
-    sleep 1 
+    rustup target add wasm32-unknown-unknown --toolchain stable
     rustup component add rust-src --toolchain stable
-    print_info "Please wait ..."
-    sleep 1 
-    rustup component add rust-src --toolchain default
-    
-    # Print Rust versions to confirm installation
-    print_info "Checking Rust version..."
-    rustc --version
 
-    print_info "Checking Rust version Show..."
-    rustup show
     print_info "Please wait ..."
-    sleep 1 
+    sleep 1
+    print_info "Rust installation completed."
+    rustc --version || { echo "Rust compiler is not working! Exiting."; exit 1; }
+    rustup show
     rustup +nightly show
 
     print_info "Please wait ..."
-    sleep 1 
-    sudo systemctl enable ssh
-    print_info "Please wait ..."
-    sleep 1 
-    sudo apt install ufw
-    print_info "Please wait ..."
-    sleep 1 
-    sudo ufw allow ssh
-    print_info "Please wait ..."
-    sleep 1 
-    sudo ufw enable
-    print_info "Allow Port 30333..."
-    sudo ufw numbered
-    print_info "Please wait ..."
-    sleep 1 
-    sudo ufw enable
-    print_info "Please wait ..."
-    sleep 1 
-    sudo ufw allow 30333
-    print_info "Please wait ..."
     sleep 1
+    # Configure SSH and Firewall
+    print_info "Configuring SSH and firewall settings..."
+    sudo systemctl enable ssh
+    sudo apt install -y ufw
+    sudo ufw allow ssh
+    sudo ufw enable || { echo "Firewall setup failed! Exiting."; exit 1; }
+    sudo ufw allow 30333
     sudo ufw deny 9945
+
+    # Allow numbered rules for firewall
+    print_info "Configuring firewall rules..."
+    sudo ufw numbered
+
+    # Final Confirmation
+    print_info "Dependency installation and configuration completed."
 
     # Call the Master function to display the menu
     master
 }
-
 
 
 # Function to set up the Ghost node directory and clone the repository
@@ -755,6 +776,121 @@ stop_service() {
 }
 
 
+reconnect_peers() {
+
+    GHOST_NODE_DIR="/root/ghost/ghost-node"
+
+    # Step 1: Stop the running Ghost node service
+    echo "Stopping the Ghost node..."
+    sudo systemctl stop ghost-node
+
+    # Inform the user and add a delay for better clarity
+    print_info "Please wait ..."
+    sleep 1 
+
+    # Step 2: Navigate to the Ghost node folder or exit if not found
+    if [ -d "$GHOST_NODE_DIR" ]; then
+        echo "Directory $GHOST_NODE_DIR exists."
+        cd "$GHOST_NODE_DIR"
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 3: Clean up old Ghost node data by removing the folder
+        echo "Cleaning up existing Ghost node data..."
+        sudo rm -rf /var/lib/ghost
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 4: Switch to the 'main' branch in the Git repository
+        echo "Switching to the 'main' branch..."
+        git switch main
+
+        # Step 5: Pull the latest updates from the Git repository
+        echo "Pulling the latest updates from the repository..."
+        git pull origin main
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+	# Rust Installation with rust_setup function
+        print_info "ReChecking  Rust..."
+        rust_setup || { echo "Rust setup failed! Exiting."; exit 1; }
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 6: Start the setup process with release and global options
+        echo "Starting the setup process..."
+        ./scripts/starter.sh --release --make-global
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 7: Verify the SHA256 checksum of the Casper JSON file
+        echo "Checking SHA256 checksum of the Casper JSON..."
+        sha256sum /etc/ghost/casper.json
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 8: Set the unit file arguments for the service
+        echo "Setting unit file arguments..."
+        ./scripts/starter.sh --unit-file --set-arguments
+
+        # Step 9: Perform a keys check
+        echo "Checking keys..."
+        ./scripts/starter.sh --check-keys
+
+        # Step 10: Start the Ghost node service
+        echo "Starting the Ghost node..."
+        sudo systemctl start ghost-node
+
+        # Add a delay to allow the service to stabilize
+        print_info "Please wait 1 minute ..."
+        sleep 60 
+
+        # Step 11: Insert keys into the node
+        echo "Inserting keys..."
+        ./scripts/starter.sh --check-keys --insert-keys
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 12: Restart the Ghost node service
+        echo "Restarting the Ghost node..."
+        sudo systemctl restart ghost-node
+
+        # Inform the user and add a delay for better clarity
+        print_info "Please wait ..."
+        sleep 1 
+
+        # Step 13: Enable the Ghost node service for auto-start on boot
+        echo "Enabling the Ghost node service..."
+        sudo systemctl enable ghost-node
+
+        # Final step: Notify the user of successful completion
+        echo "Reconnect process completed successfully!"
+
+    else
+        echo "Error: Directory $GHOST_NODE_DIR does not exist."
+        echo "Please run the setup_node function first."
+        exit 1
+    fi
+
+    # Call the Master function to display the menu
+    master
+}
+
+
 enable_service() {
     echo "Enabling the ghost-node service to start at boot..."
 
@@ -809,6 +945,29 @@ restart_service() {
 }
 
 
+# Function to fetch and display the Peer ID (Account ID)
+account_id() {
+    # Check if jq is installed
+    if ! command -v jq &> /dev/null; then
+        echo "'jq' is not installed. Installing jq now..."
+        # Install jq if not present
+        sudo apt update && sudo apt install -y jq
+        echo "jq has been installed."
+    else
+        echo "jq is already installed. Proceeding with fetching the Peer ID..."
+    fi
+    
+    # Fetch the Peer ID using curl and jq
+    peer_id=$(curl -s -H "Content-Type: application/json" -d '{"id":1, "jsonrpc":"2.0", "method": "system_localPeerId", "params":[]}' http://localhost:9945 | jq -r '.result')
+
+    # Return the Peer ID (Account ID)
+    echo "Account ID: $peer_id"
+
+   # Call the Master function to display the menu
+   master
+}
+
+
 logs_checker() {
     echo "Checking logs for the ghost-node service..."
 
@@ -845,17 +1004,19 @@ master() {
     print_info "15. Enable-Service"
     print_info "16. Start-Service"
     print_info "17. Stop-Service"
-    print_info "18. Restart-Service"
-    print_info "19. Status-Checker"
-    print_info "20. Logs-Checker"
-    print_info "21. Exit"
+    print_info "18. Reconnect-Peers"
+    print_info "19. Restart-Service"
+    print_info "20. Status-Checker"
+    print_info "21. Account-ID"
+    print_info "22. Logs-Checker"
+    print_info "23. Exit"
     print_info ""
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 21): " user_choice
+    read -p "Enter your choice (1 or 23): " user_choice
 
     case $user_choice in
         1)
@@ -910,19 +1071,25 @@ master() {
             stop_service
             ;;
         18)
-            restart_service
+            reconnect_peers
             ;;
         19)
-            status_service
+            restart_service
             ;;
         20)
-            logs_checker
+            status_service
             ;;
         21)
+            account_id
+            ;;
+        22)
+            logs_checker
+            ;;
+        23)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 21 : "
+            print_error "Invalid choice. Please enter 1 or 23 : "
             ;;
     esac
 }
